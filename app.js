@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
     if (!Object.keys(lobby).includes(data.nickname)) {
       socket.name = data.nickname;
       lobby[socket.name] = socket
-      socket.broadcast.emit("newConn", { "name": socket.name });
+      socket.broadcast.emit("newConn", { "name": socket.name });//{ "name": socket.name, "profilePic": data.profilePic }
     }
     socket.emit("enteredSucc", Object.keys(lobby));
   })
@@ -30,8 +30,12 @@ io.on('connection', (socket) => {
     socket.broadcast.emit("disConn", { "disConnName": socket.name });
   });
 
-  socket.on('chat msg', (msg, sender, receiver, time) => {
-    io.to(lobby[receiver].id).emit('chatReceive', { msg: msg, time: moment(new Date()).format("HH:mm A") });
+  socket.on('chat msg', (msg, sender, receiver) => {
+    if (receiver !== null) {
+      io.to(lobby[receiver].id).emit('chatReceive', { msg: msg, time: moment(new Date()).format("HH:mm A") });
+    } else {
+      io.to(lobby[sender].id).emit('chatReceive', { msg: "유저가 퇴장했습니다", time: moment(new Date()).format("HH:mm A") });
+    }
   });
 });
 
