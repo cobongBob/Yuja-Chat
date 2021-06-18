@@ -19,16 +19,22 @@ io.on('connection', (socket) => {
     if (!Object.keys(lobby).includes(data.nickname)) {
       socket.name = data.nickname;
       socket.profilePic = data.profilePic;
-      lobby[socket.name] = socket
-      socket.broadcast.emit("newConn", { "name": socket.name, "profilePic": data.profilePic || "" });
+      lobby[socket.name] = socket;
+      socket.broadcast.emit('newConn', {
+        name: socket.name,
+        profilePic: data.profilePic || '',
+      });
     }
-    const newData = []
+    const newData = [];
     const oriData = Object.keys(lobby);
     for (let i = 0; i < oriData.length; i++) {
-      newData.push({ name: lobby[oriData[i]].name, profilePic: lobby[oriData[i]].profilePic })
+      newData.push({
+        name: lobby[oriData[i]].name,
+        profilePic: lobby[oriData[i]].profilePic,
+      });
     }
-    socket.emit("enteredSucc", newData);
-  })
+    socket.emit('enteredSucc', newData);
+  });
 
   socket.on('disconnect', () => {
     delete lobby[socket.name];
@@ -37,9 +43,16 @@ io.on('connection', (socket) => {
 
   socket.on('chat msg', (msg, sender, receiver) => {
     if (receiver) {
-      io.to(lobby[receiver].id).emit('chatReceive', { sender: sender, msg: msg, time: moment(new Date()).format("HH:mm A")});
+      io.to(lobby[receiver].id).emit('chatReceive', {
+        sender: sender,
+        msg: msg,
+        time: moment(new Date()).format('HH:mm A'),
+      });
     } else {
-      io.to(lobby[sender].id).emit('chatReceive', { msg: "유저가 퇴장했습니다", time: moment(npm i react-scroll-to-bottomnew Date()).format("HH:mm A") });
+      io.to(lobby[sender].id).emit('chatReceive', {
+        msg: '유저가 퇴장했습니다',
+        time: moment(new Date()).format('HH:mm A'),
+      });
     }
   });
 });
