@@ -40,15 +40,42 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('disConn', { disConnName: socket.name });
   });
 
+  socket.on('logout', (userData, receiver) => {
+    if (lobby[socket.name]) {
+      if (lobby[receiver]) {
+        io.to(lobby[receiver].id).emit('chatReceive', {
+          msg: `${socket.name}님이 퇴장했습니다`,
+        });
+      }
+      delete lobby[socket.name];
+      socket.broadcast.emit('disConn', { disConnName: socket.name });
+    }
+  });
+  socket.on('quit', (userData, receiver) => {
+    if (lobby[receiver]) {
+      io.to(lobby[receiver].id).emit('chatReceive', {
+        msg: `${userData.nickname}님이 퇴장했습니다`,
+      });
+    }
+  });
+
   socket.on('chat msg', (msg, sender, receiver) => {
-    if (receiver && lobby[receiver].id) {
+    if (receiver && lobby[receiver] && lobby[receiver].id) {
       io.to(lobby[receiver].id).emit('chatReceive', {
         sender: sender,
         msg: msg,
       });
-    } else {
+    } else if (lobby[sender]) {
       io.to(lobby[sender].id).emit('chatReceive', {
         msg: '유저가 퇴장했습니다',
+      });
+    }
+  });
+  socket.on('chatNoti', (sender, receiver) => {
+    if (lobby[receiver] && lobby[sender.nickname]) {
+      io.to(lobby[receiver].id).emit('chatNotification', {
+        msg: `${sender.nickname}님께서 채팅을 요청하였습니다.`,
+        sender: sender,
       });
     }
   });
