@@ -3,7 +3,6 @@ const http = require('http');
 const app = express();
 const server = http.createServer(app);
 const socketIO = require('socket.io');
-const moment = require('moment');
 const PORT = process.env.PORT || 5000;
 
 corsOptions = {
@@ -42,16 +41,14 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat msg', (msg, sender, receiver) => {
-    if (receiver) {
+    if (receiver && lobby[receiver].id) {
       io.to(lobby[receiver].id).emit('chatReceive', {
         sender: sender,
         msg: msg,
-        time: moment(new Date()).format('HH:mm A'),
       });
     } else {
       io.to(lobby[sender].id).emit('chatReceive', {
         msg: '유저가 퇴장했습니다',
-        time: moment(new Date()).format('HH:mm A'),
       });
     }
   });
