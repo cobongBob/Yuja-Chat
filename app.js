@@ -15,7 +15,15 @@ let lobby = [];
 
 io.on('connection', (socket) => {
   socket.on('entered', (data) => {
+    for (const property in lobby) {
+      if (lobby[property] && data.id === lobby[property].userId) {
+        delete lobby[property];
+        socket.broadcast.emit('disConn', { disConnName: property });
+        break;
+      }
+    }
     if (!Object.keys(lobby).includes(data.nickname)) {
+      socket.userId = data.id;
       socket.name = data.nickname;
       socket.profilePic = data.profilePic;
       lobby[socket.name] = socket;
