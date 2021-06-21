@@ -44,6 +44,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    if (lobby[socket.receiver]) {
+      io.to(lobby[socket.receiver].id).emit('chatReceive', {
+        msg: `${socket.name}님이 퇴장했습니다`,
+      });
+    }
     delete lobby[socket.name];
     socket.broadcast.emit('disConn', { disConnName: socket.name });
   });
@@ -69,14 +74,12 @@ io.on('connection', (socket) => {
 
   socket.on('chat msg', (msg, sender, receiver) => {
     if (receiver && lobby[receiver] && lobby[receiver].id) {
-      io.to(lobby[receiver].id).emit('chatReceive', {
-        sender: sender,
-        msg: msg,
-      });
-    } else if (lobby[sender]) {
-      io.to(lobby[sender].id).emit('chatReceive', {
-        msg: '유저가 퇴장했습니다',
-      });
+      if (socket.receiver === sender.nickname) {
+        io.to(lobby[receiver].id).emit('chatReceive', {
+          sender: sender,
+          msg: msg,
+        });
+      }
     }
   });
   socket.on('chatNoti', (sender, receiver) => {
@@ -85,6 +88,11 @@ io.on('connection', (socket) => {
         msg: `${sender.nickname}님께서 채팅을 요청하였습니다.`,
         sender: sender,
       });
+    }
+  });
+  socket.on('handshaker', (sender, receiver) => {
+    if (lobby[receiver.name] && lobby[sender.nickname]) {
+      socket.receiver = receiver.name;
     }
   });
 });
