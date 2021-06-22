@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    if (lobby[socket.receiver]) {
+    if (lobby[socket.receiver] && lobby[socket.receiver].receiver === socket.name) {
       io.to(lobby[socket.receiver].id).emit('chatReceive', {
         msg: `${socket.name}님이 퇴장했습니다`,
       });
@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('logout', (userData, receiver) => {
-    if (lobby[socket.name]) {
+    if (lobby[socket.name] && lobby[receiver].receiver === userData.nickname) {
       if (lobby[receiver]) {
         io.to(lobby[receiver].id).emit('chatReceive', {
           msg: `${socket.name}님이 퇴장했습니다`,
@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('quit', (userData, receiver) => {
-    if (lobby[receiver]) {
+    if (lobby[receiver] && lobby[receiver].receiver === userData.nickname) {
       io.to(lobby[receiver].id).emit('chatReceive', {
         msg: `${userData.nickname}님이 퇴장했습니다`,
       });
