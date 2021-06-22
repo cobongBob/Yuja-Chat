@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 5000;
 corsOptions = {
   cors: true,
   origins: ['https://www.withyuja.com'],
+  // origins: ['localhost:3000'],
 };
 const io = socketIO(server, corsOptions);
 
@@ -74,7 +75,7 @@ io.on('connection', (socket) => {
 
   socket.on('chat msg', (msg, sender, receiver) => {
     if (receiver && lobby[receiver] && lobby[receiver].id) {
-      if (socket.receiver === sender.nickname) {
+      if (socket.receiver === receiver) {
         io.to(lobby[receiver].id).emit('chatReceive', {
           sender: sender,
           msg: msg,
