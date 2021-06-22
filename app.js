@@ -97,6 +97,7 @@ io.on('connection', (socket) => {
     }
     io.to(socket.id).emit('chatReceive', {
       msg: `${receiver.name}님의 연결을 기다리고 있습니다...`,
+      sender: receiver,
     });
   });
 });
