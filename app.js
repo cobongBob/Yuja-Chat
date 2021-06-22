@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
 
   socket.on('chat msg', (msg, sender, receiver) => {
     if (receiver && lobby[receiver] && lobby[receiver].id) {
-      if (socket.receiver === receiver) {
+      if (lobby[receiver].receiver === receiver) {
         io.to(lobby[receiver].id).emit('chatReceive', {
           sender: sender,
           msg: msg,
@@ -95,6 +95,9 @@ io.on('connection', (socket) => {
     if (lobby[receiver.name] && lobby[sender.nickname]) {
       socket.receiver = receiver.name;
     }
+    io.to(socket.id).emit('chatReceive', {
+      msg: `${receiver.name}님의 연결을 기다리고 있습니다...`,
+    });
   });
 });
 
