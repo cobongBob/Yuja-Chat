@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
 
   socket.on('chat msg', (msg, sender, receiver) => {
     if (receiver && lobby[receiver] && lobby[receiver].id) {
-      if (lobby[receiver].receiver === receiver) {
+      if (lobby[receiver].receiver === sender) {
         io.to(lobby[receiver].id).emit('chatReceive', {
           sender: sender,
           msg: msg,
