@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
 
   socket.on('logout', (userData, receiver) => {
     if (lobby[socket.name]) {
-      if (lobby[receiver]&& lobby[receiver].receiver === userData.nickname) {
+      if (lobby[receiver]&& lobby[receiver].receiver === socket.name) {
         io.to(lobby[receiver].id).emit('chatReceive', {
           msg: `${socket.name}님이 퇴장했습니다`,
         });
