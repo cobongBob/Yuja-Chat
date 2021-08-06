@@ -31,6 +31,7 @@ https://www.withyuja.com/
 ![image](https://user-images.githubusercontent.com/77711322/128451055-1658b4fc-b3b6-40ed-b4e8-830b93a61195.png)
 
 ## 팀 정보<a id="chapter6"></a>
+발표영상 : https://www.youtube.com/watch?v=3l15uiEyPd0
 <table width="788">
 <thead>
 <tr>
